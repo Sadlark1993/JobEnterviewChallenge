@@ -5,10 +5,13 @@ import model from './model'
 import mkcashin from './service/cashin'
 import mkcashout from './service/cashout'
 
-const app = express()
+const app = express();
 
-app.set('trust proxy', 1)
-app.use(cors())
+// trust first proxy of the chain and use its headers 
+app.set('trust proxy', 1);
+
+// set cors to allow requests from any origin
+app.use(cors());
 
 const cashin = mkcashin(model)
 const cashout = mkcashout(model)

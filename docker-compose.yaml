@@ -17,7 +17,7 @@ services:
       POSTGRES_DB: pgdb
     ports:
       - "0.0.0.0:5432:5432"
-    volumes: 
+    volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d:rw,z
       - pgdata_pagway:/var/lib/postgresql/data
   pgadmin:

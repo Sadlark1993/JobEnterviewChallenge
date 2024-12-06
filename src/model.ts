@@ -7,6 +7,7 @@ type PersistCashin = Parameters<typeof mkCashin>[0]["persistCashin"]
 type PersistCashout = Parameters<typeof mkCashout>[0]["persistCashout"]
 type Rows = { id: number }
 
+// ##################################### QUERIES ###############################
 const SQLCashin = `INSERT INTO
   pagway.transacao (
     valor_transacao, 
@@ -79,6 +80,7 @@ WHERE
   status_recebivel = $1
 ;`
 
+// ##################################### REPO METHODS ###############################
 const persistCashin: PersistCashin = async (valorTransacao, descricaoTransacao, dataCriacaoTransacao, nomePortadorCartao, numeroCartao, validadeCartao, codigoSegurancaCartao) => {
   const { rows } =  await db.query<Rows>({
     name: 'SQLCashin',
@@ -94,7 +96,7 @@ const persistCashout: PersistCashout = async (transactionId, statusRecebivel, da
     name: 'SQLCashout',
     text: SQLCashout,
     values: [transactionId, statusRecebivel, dataPagamentoRecebivel, valorLiquidoRecebivel]
-  })
+  });
 }
 
 interface ReadPaginatedTransactionParam {

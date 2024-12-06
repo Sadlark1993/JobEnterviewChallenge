@@ -1,0 +1,7 @@
+metodos:
+
+  1. processarTransacao(valor, descricao, nomePortador, validadeCartao, cvv);
+  2. getTransacoes();
+  3. private criarRecebivel(status, dataPagamento)
+  4. getSaldoDisponivel();
+  5. getSaldoPrevisto();
