@@ -1,7 +1,26 @@
-metodos:
+# METHODS:
 
-  1. processarTransacao(valor, descricao, nomePortador, validadeCartao, cvv);
-  2. getTransacoes();
-  3. private criarRecebivel(status, dataPagamento)
-  4. getSaldoDisponivel();
-  5. getSaldoPrevisto();
+  1. processarTransacao(valor, descricao, nomePortador, validadeCartao, cvv); X
+  2. getTransacoes(); X
+  3. private criarRecebivel(status, dataPagamento); X
+  4. getSaldoDisponivel(); X
+  5. getSaldoPrevisto(); X
+
+  models.ts: the repository layer
+
+# WHATS ALREADY DONE:
+ - Every method thats proposed in challenge.md is already done.
+
+# WHAT NEEDS TO BE DONE:
+  ## Change the structure:
+    - Lets change a little bit the structure of the project. Creating the folder controller and repository, to separate the code by layers;
+
+  ## Add the new entity "client" to  the project:
+    - Create the entity client, to separate the transactions and receivables by the clients;
+    - The methods to get the transactions, receivables and values can be separated by client;
+
+  ## Add authentication to the project:
+    - Lets implement a JWT authentication security system to the project;
+    - Each user must have a account to access the system;
+    - There will be two types of users: client and admin;
+    - While the admin has accress to the whole database, the client has access only to the data related to him;

@@ -27,8 +27,9 @@ const antifraud = (props: CashinProps) => Promise.resolve()
 const mastercadApi = (props: CashinProps) => Promise.resolve()
 
 /**
+ *  Factory function that returns another function that does the following:
  *  After perform some validations, it will call the repo function persistCashin
- * that will persist the transation in the database.
+ * that will persist the transation in the database using models.persistCashin.
  */
 const mkCashin = (db: DataLayerCashin) => async (props: CashinProps) => {
   await checkValidCard(props)
