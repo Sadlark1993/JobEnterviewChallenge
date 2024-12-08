@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import transacao from './routes/transacao';
+import recebivel from './routes/recebivel';
 
 import { ppid } from 'node:process';
 
@@ -13,5 +14,6 @@ app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 app.use('/api/transacao', transacao);
+app.use('/api/saldos', recebivel);
 
 export default app;
