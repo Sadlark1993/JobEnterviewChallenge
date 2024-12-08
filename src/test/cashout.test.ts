@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import mkCashout from './cashout'
+import mkCashout from '../service/recebivelService'
 
 const dadosRecebivelOK = {
   transactionId: 1,

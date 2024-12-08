@@ -1,10 +1,9 @@
 import express from 'express';
-import model from '../model';
-import mkcashin from '../service/cashin';
-import mkcashout from '../service/cashout';
+import transacaoService from '../service/transacaoService';
+import recebivelService from '../service/recebivelService';
 
-const cashin = mkcashin(model);
-const cashout = mkcashout(model);
+const cashin = transacaoService.mkCashin();
+const cashout = recebivelService.mkCashout();
 const onlyNumber = /^\d+$/;
 
 // @desc Create a single transaction
@@ -60,24 +59,11 @@ export const inserirTransacao = async (req: express.Request, res: express.Respon
 export const recuperarTransacoes = async (req: express.Request, res: express.Response) => {
   console.log(req.url, new Date());
   const { page = '1', size = '20', order = 'asc' } = req.query;
-
-  /**
-   * DEFAULT PAGINATION
-   */
   const pageInt = Number.parseInt(String(page));
-  const pageValid = !Number.isFinite(pageInt) || Number.isNaN(pageInt) || pageInt < 1 ? 1 : pageInt;
-  //
   const sizeInt = Number.parseInt(String(size));
-  const sizeValid = Number.isNaN(sizeInt) || sizeInt < 1 ? 1 : sizeInt;
-  const sizeCrop = sizeValid > 200 ? 200 : sizeValid;
-  //
   const orderDesc = order === 'desc';
+  console.log('conna call recuperar transacoes');
+  const transactionList = transacaoService.recuperarTransacoes(pageInt, sizeInt, orderDesc);
 
-  const transactionList = await model.readPaginatedTransaction({
-    limit: sizeCrop,
-    offset: sizeCrop * (pageValid - 1),
-    order: orderDesc ? 'DESC' : 'ASC',
-  });
-
-  res.status(200).json(transactionList);
+  res.status(200).json(await transactionList);
 };

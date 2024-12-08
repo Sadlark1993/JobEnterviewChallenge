@@ -1,5 +1,5 @@
 import express from 'express';
-import model from '../model';
+import model from '../repository/transacaoRepository';
 
 export const recuperarSaldo = async (req: express.Request, res: express.Response) => {
   console.log(req.url, new Date());
