@@ -38,30 +38,20 @@ const persistCashout: PersistCashout = async (transactionId, statusRecebivel, da
   });
 };
 
-const totalPendente = async (): Promise<number> => {
+
+const recuperarSaldo = async (status: 'liquidado' | 'pendente') => {
   const query = await db.query<{ sum: number }>({
     name: 'SQLSumRecebivel',
     text: SQLSumRecebivel,
-    values: ['pendente'],
+    values: [status],
   });
   const total = query.rows[0].sum;
 
   return total;
-};
+}
 
-const totalLiquidado = async (): Promise<number> => {
-  const query = await db.query<{ sum: number }>({
-    name: 'SQLSumRecebivel',
-    text: SQLSumRecebivel,
-    values: ['liquidado'],
-  });
-  const total = query.rows[0].sum;
-
-  return total;
-};
 
 export default {
   persistCashout,
-  totalPendente,
-  totalLiquidado,
+  recuperarSaldo
 };

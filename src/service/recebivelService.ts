@@ -17,4 +17,10 @@ const mkCashout = ({ persistCashout } = recebivelRepository) => async (props: Ca
   await persistCashout(props.transactionId, statusRecebivel, dataPagamentoRecebivel, valorLiquidoRecebivel);
 };
 
-export default { mkCashout };
+const recuperarSaldo = async () => {
+  const disponivel = await recebivelRepository.recuperarSaldo('liquidado');
+  const previsto = await recebivelRepository.recuperarSaldo('pendente');
+  return { disponivel, previsto }
+}
+
+export default { mkCashout, recuperarSaldo };
