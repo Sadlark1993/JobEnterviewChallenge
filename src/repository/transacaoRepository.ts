@@ -7,12 +7,9 @@ type PersistCashin = (
   nomePortadorCartao: string,
   numeroCartao: string,
   validadeCartao: Date,
-  codigoSegurancaCartao: string
+  codigoSegurancaCartao: string,
+  cliente: number
 ) => Promise<number>;
-
-
-
-type Rows = { id: number };
 
 // ##################################### QUERIES ###############################
 const SQLCashin = `INSERT INTO
@@ -23,51 +20,35 @@ const SQLCashin = `INSERT INTO
     nome_portador_cartao,
     numero_cartao,
     validade_cartao,
-    codigo_seguranca_cartao
+    codigo_seguranca_cartao,
+    cliente
   )
   VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
   )
   RETURNING id;
 `;
 
+const selectTransactions = (client: number | null, order: 'DESC' | 'ASC') => {
+  const clientFilter = client ? 'WHERE transacao.cliente = $3' : '';
+  const query = `SELECT
+    valor_transacao,
+    descricao_transacao,
+    data_criacao_transacao,
+    nome_portador_cartao,
+    numero_cartao,
+    validade_cartao,
+    codigo_seguranca_cartao
+  FROM pagway.transacao
+  ${clientFilter}
+  ORDER BY transacao.id ${order}
+  LIMIT $2
+  OFFSET $1 ;`
 
-const SQLPaginatedTransactionASC = `SELECT
-  valor_transacao,
-  descricao_transacao,
-  data_criacao_transacao,
-  nome_portador_cartao,
-  numero_cartao,
-  validade_cartao,
-  codigo_seguranca_cartao
-FROM
-  pagway.transacao
-ORDER BY
-  transacao.id ASC
-LIMIT
-  $2
-OFFSET
-  $1
-;`;
-const SQLPaginatedTransactionDESC = `SELECT
-  valor_transacao,
-  descricao_transacao,
-  data_criacao_transacao,
-  nome_portador_cartao,
-  numero_cartao,
-  validade_cartao,
-  codigo_seguranca_cartao
-FROM
-  pagway.transacao
-ORDER BY
-  transacao.id DESC
-LIMIT
-  $2
-OFFSET
-  $1
-;`;
+  return query;
+}
 
-
+type Rows = { id: number };
 
 // ##################################### REPO METHODS ###############################
 const persistCashin: PersistCashin = async (
@@ -77,12 +58,13 @@ const persistCashin: PersistCashin = async (
   nomePortadorCartao,
   numeroCartao,
   validadeCartao,
-  codigoSegurancaCartao
+  codigoSegurancaCartao,
+  cliente
 ) => {
   const { rows } = await db.query<Rows>({
     name: 'SQLCashin',
     text: SQLCashin,
-    values: [valorTransacao, descricaoTransacao, dataCriacaoTransacao, nomePortadorCartao, numeroCartao, validadeCartao, codigoSegurancaCartao],
+    values: [valorTransacao, descricaoTransacao, dataCriacaoTransacao, nomePortadorCartao, numeroCartao, validadeCartao, codigoSegurancaCartao, cliente],
   });
 
   return rows[0].id;
@@ -90,6 +72,7 @@ const persistCashin: PersistCashin = async (
 
 
 interface ReadPaginatedTransactionParam {
+  client: number | null;
   offset: number;
   limit: number;
   order: 'ASC' | 'DESC';
@@ -103,31 +86,33 @@ interface TransactionElement {
   validadeCartao: string;
   codigoSegurancaSartao: string;
 }
-const readPaginatedTransaction = async ({ offset, limit, order }: ReadPaginatedTransactionParam): Promise<Array<TransactionElement>> => {
-  console.dir({
-    offset,
-    limit,
-    order,
-  });
+const readPaginatedTransaction = async ({ client, offset, limit, order }: ReadPaginatedTransactionParam): Promise<Array<TransactionElement>> => {
+
 
   let rows: Array<TransactionElement>;
 
-  if (order === 'ASC') {
-    const query = await db.query<TransactionElement>({
-      name: 'SQLPaginatedTransactionASC',
-      text: SQLPaginatedTransactionASC,
-      values: [offset, limit],
-    });
-    rows = query.rows;
-  } else {
-    const query = await db.query<TransactionElement>({
-      name: 'SQLPaginatedTransactionDESC',
-      text: SQLPaginatedTransactionDESC,
-      values: [offset, limit],
-    });
-    rows = query.rows;
+  //const hasClient = !!client;
+  const queryName = `SQLPaginatedTransaction${order}` + (client ? 'Client' : '');
+  const values = [offset, limit];
+  if (client) {
+    values.push(client);
   }
-  console.log(rows);
+
+  console.dir({
+    client,
+    offset,
+    limit,
+    order,
+    queryName
+  });
+  const query = await db.query<TransactionElement>({
+    name: queryName,
+    text: selectTransactions(client, order),
+    values: values,
+  });
+  rows = query.rows;
+
+  //console.log(rows);
   return rows;
 };
 

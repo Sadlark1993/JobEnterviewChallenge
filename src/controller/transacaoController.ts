@@ -12,9 +12,7 @@ export const inserirTransacao = async (req: express.Request, res: express.Respon
   console.log(req.url, new Date());
   const { valor, descricao, nomePortadorCartao, numeroCartao, validadeCartao, codigoSegurancaCartao } = req.body;
 
-  /**
-   * VALIDATE INPUTS
-   */
+  // Validate inputs
   const valorOK = typeof valor === 'number' && Number.isFinite(valor) && valor > 0 && valor % 1 === 0;
   const descricaoOK = typeof descricao === 'string' && descricao.length > 0 && descricao.length < 1024;
   const nomePortadorCartaoOK = typeof nomePortadorCartao === 'string' && nomePortadorCartao.length > 0 && nomePortadorCartao.length < 1024;
@@ -34,6 +32,7 @@ export const inserirTransacao = async (req: express.Request, res: express.Respon
     return; // throw
   }
 
+  // sends req to service layer
   const { transactionId, dataCriacaoTransacao } = await cashin({
     codigoSegurancaCartao,
     descricao,
@@ -62,7 +61,6 @@ export const recuperarTransacoes = async (req: express.Request, res: express.Res
   const pageInt = Number.parseInt(String(page));
   const sizeInt = Number.parseInt(String(size));
   const orderDesc = order === 'desc';
-  console.log('conna call recuperar transacoes');
   const transactionList = transacaoService.recuperarTransacoes(pageInt, sizeInt, orderDesc);
 
   res.status(200).json(await transactionList);

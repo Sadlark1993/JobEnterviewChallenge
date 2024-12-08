@@ -21,13 +21,25 @@ VALUES (
   $4
 );`;
 
-const SQLSumRecebivel = `SELECT
-  SUM(valor_liquido_recebivel)
-FROM
-  pagway.recebivel
-WHERE
-  status_recebivel = $1
-;`;
+const getSumRecebivel = (client: number | null) => {
+  let innerTrans = '';
+  let clientFilter = '';
+  if (client) {
+    innerTrans = 'INNER JOIN pagway.transacao b ON a.transacao_id = b.id';
+    clientFilter = 'AND b.cliente = $2';
+  }
+  const query = `SELECT
+    SUM(valor_liquido_recebivel)
+  FROM
+    pagway.recebivel a
+  ${innerTrans}
+  WHERE
+    a.status_recebivel = $1
+    ${clientFilter}
+  ;`;
+  return query;
+}
+
 
 
 const persistCashout: PersistCashout = async (transactionId, statusRecebivel, dataPagamentoRecebivel, valorLiquidoRecebivel) => {
@@ -39,11 +51,16 @@ const persistCashout: PersistCashout = async (transactionId, statusRecebivel, da
 };
 
 
-const recuperarSaldo = async (status: 'liquidado' | 'pendente') => {
+const recuperarSaldo = async (status: 'liquidado' | 'pendente', client: number | null) => {
+  const queryName = 'SQLSumRecebivel' + (client ? 'Client' : '');
+  const values: Array<'liquidado' | 'pendente' | number | null> = [status];
+  if (client) {
+    values.push(client);
+  }
   const query = await db.query<{ sum: number }>({
-    name: 'SQLSumRecebivel',
-    text: SQLSumRecebivel,
-    values: [status],
+    name: queryName,
+    text: getSumRecebivel(client),
+    values: values,
   });
   const total = query.rows[0].sum;
 

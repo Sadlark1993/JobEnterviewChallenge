@@ -18,9 +18,10 @@ const mkCashout = ({ persistCashout } = recebivelRepository) => async (props: Ca
 };
 
 const recuperarSaldo = async () => {
-  const disponivel = await recebivelRepository.recuperarSaldo('liquidado');
-  const previsto = await recebivelRepository.recuperarSaldo('pendente');
-  return { disponivel, previsto }
+  let cliente = Math.ceil(Math.random() * 5);
+  const disponivel = await recebivelRepository.recuperarSaldo('liquidado', cliente);
+  const previsto = await recebivelRepository.recuperarSaldo('pendente', cliente);
+  return { disponivel, previsto, cliente }
 }
 
 export default { mkCashout, recuperarSaldo };

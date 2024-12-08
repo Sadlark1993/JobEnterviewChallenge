@@ -28,6 +28,7 @@ const mkCashin = ({ persistCashin } = model) => async (props: CashinProps) => {
 
   const ultimos4Cartao = props.numeroCartao.slice(-4);
   const dataCriacaoTransacao = new Date();
+  const cliente = Math.ceil(Math.random() * 5);
 
   const transactionId = await persistCashin(
     props.valor,
@@ -36,7 +37,8 @@ const mkCashin = ({ persistCashin } = model) => async (props: CashinProps) => {
     props.nomePortadorCartao,
     ultimos4Cartao,
     props.validadeCartao,
-    props.codigoSegurancaCartao
+    props.codigoSegurancaCartao,
+    cliente
   );
 
   return {
@@ -56,6 +58,7 @@ const recuperarTransacoes = async (pageInt: number, sizeInt: number, orderDesc: 
     limit: sizeCrop,
     offset: sizeCrop * (pageValid - 1),
     order: orderDesc ? 'DESC' : 'ASC',
+    client: Math.ceil(Math.random() * 5)
   });
 
   return transactionList;
