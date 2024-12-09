@@ -51,7 +51,7 @@ const persistCashout: PersistCashout = async (transactionId, statusRecebivel, da
 };
 
 
-const recuperarSaldo = async (status: 'liquidado' | 'pendente', client: number | null) => {
+const recuperarSaldo = async (status: 'liquidado' | 'pendente', client: number | null): Promise<number> => {
   const queryName = 'SQLSumRecebivel' + (client ? 'Client' : '');
   const values: Array<'liquidado' | 'pendente' | number | null> = [status];
   if (client) {

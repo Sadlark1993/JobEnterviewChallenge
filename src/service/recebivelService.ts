@@ -17,10 +17,10 @@ const mkCashout = ({ persistCashout } = recebivelRepository) => async (props: Ca
   await persistCashout(props.transactionId, statusRecebivel, dataPagamentoRecebivel, valorLiquidoRecebivel);
 };
 
-const recuperarSaldo = async () => {
+const recuperarSaldo = ({ recuperarSaldo } = recebivelRepository) => async () => {
   let cliente = Math.ceil(Math.random() * 5);
-  const disponivel = await recebivelRepository.recuperarSaldo('liquidado', cliente);
-  const previsto = await recebivelRepository.recuperarSaldo('pendente', cliente);
+  const disponivel = await recuperarSaldo('liquidado', cliente);
+  const previsto = await recuperarSaldo('pendente', cliente);
   return { disponivel, previsto, cliente }
 }
 
