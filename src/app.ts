@@ -5,6 +5,8 @@ import transacao from './routes/transacao';
 import recebivel from './routes/recebivel';
 
 import { ppid } from 'node:process';
+import notFound from './middleware/notFound';
+import errorHandler from './middleware/error';
 
 const app = express();
 
@@ -17,5 +19,7 @@ app.use(express.json());
 app.use('/api/auth', auth);
 app.use('/api/transacao', transacao);
 app.use('/api/saldos', recebivel);
+app.use(notFound);
+app.use(errorHandler)
 
 export default app;

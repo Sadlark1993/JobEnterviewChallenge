@@ -1,6 +1,7 @@
 import { error } from 'console';
 import model from '../repository/transacaoRepository';
 import usuarioRepository from '../repository/usuarioRepository';
+import CustomError from '../util/CustomError';
 
 
 interface CashinProps {
@@ -35,7 +36,9 @@ const mkCashin = ({ persistCashin } = model) => async (props: CashinProps) => {
   const cliente = await usuarioRepository.getCliente(props.idUsuario);
 
   if (!cliente) {
-    throw new Error('É necessário especificar o cliente.');
+    const error = new CustomError('É necessário especificar o cliente.');
+    error.status = 400;
+    throw error;
   }
 
   const transactionId = await persistCashin(

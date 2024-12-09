@@ -22,5 +22,7 @@
   ## Add authentication to the project:
     - Lets implement a JWT authentication security system to the project;
     - Each user must have a account to access the system;
-    - There will be two types of users: client and admin;
+    - There will be two types of users: USER and ADMIN;
     - While the admin has accress to the whole database, the client has access only to the data related to him;
+
+  ## Add error handlers

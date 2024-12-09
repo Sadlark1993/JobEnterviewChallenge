@@ -1,4 +1,5 @@
 import db from '../db';
+import CustomError from '../util/CustomError';
 
 type RegisterUser = (
   username: string,
@@ -86,7 +87,9 @@ const getCliente = async (idUsuario: number): Promise<number | null> => {
   });
 
   if (query.rowCount === 0) {
-    throw new Error("Usuario nao encontrado");
+    const error = new CustomError('Usuário não encontrado no sistema.');
+    error.status = 404;
+    throw error;
   }
 
   return query.rows[0].cliente;
