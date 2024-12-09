@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "15a6cd0d-71ca-45af-aba6-e333aa108495",
+		"_postman_id": "4dd79cda-dd0c-439b-957e-4ee36e3460cc",
 		"name": "pagwaychallenge",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "7829400"
+		"_exporter_id": "29302535"
 	},
 	"item": [
 		{
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"valor\": 123,\n    \"descricao\": \"Smartband XYZ 3.0\",\n    \"nomePortadorCartao\": \"Amaral B. Cuiabano\",\n    \"numeroCartao\": \"1234123412341234\",\n    \"validadeCartao\": \"2038/12/31 23:59:59\",\n    \"codigoSegurancaCartao\": \"123\"\n}",
+					"raw": "{\n    \"valor\": 1000,\n    \"descricao\": \"Smartband XYZ 4.0\",\n    \"nomePortadorCartao\": \"Amaral B. Cuiabano\",\n    \"numeroCartao\": \"1234123412341234\",\n    \"validadeCartao\": \"2038/12/31 23:59:59\",\n    \"codigoSegurancaCartao\": \"123\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,12 +21,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{hostname}}/cuiabashoes/transacao",
+					"raw": "{{hostname}}/api/transacao",
 					"host": [
 						"{{hostname}}"
 					],
 					"path": [
-						"cuiabashoes",
+						"api",
 						"transacao"
 					]
 				}
@@ -39,22 +39,22 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{hostname}}/cuiabashoes/transacao?page=3&size=20&order=asc",
+					"raw": "{{hostname}}/api/transacao?page=1&size=10&order=asc",
 					"host": [
 						"{{hostname}}"
 					],
 					"path": [
-						"cuiabashoes",
+						"api",
 						"transacao"
 					],
 					"query": [
 						{
 							"key": "page",
-							"value": "3"
+							"value": "1"
 						},
 						{
 							"key": "size",
-							"value": "20"
+							"value": "10"
 						},
 						{
 							"key": "order",
@@ -71,19 +71,84 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{hostname}}/cuiabashoes/saldo",
+					"raw": "{{hostname}}/api/saldos",
 					"host": [
 						"{{hostname}}"
 					],
 					"path": [
-						"cuiabashoes",
-						"saldo"
+						"api",
+						"saldos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Autenticar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user@tech.com.br\",\r\n    \"senha\": \"user.tech\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostname}}/api/auth",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"api",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"email\": \"admin@pagway.com.br\",\r\n    \"senha\": \"admin\",\r\n    \"cliente\": null,\r\n    \"autoridade\": \"ADMIN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostname}}/api/auth/registrar",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"registrar"
 					]
 				}
 			},
 			"response": []
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAdGVjaC5jb20uYnIiLCJpZCI6MSwiYXV0aG9yaXR5IjoiVVNFUiIsImlhdCI6MTczMzczMjM5OCwiZXhwIjoxNzMzNzUwMzk4fQ.4-skFAtA_oQGhQhvoI69CGBISIhpVV1kkq1ljC-LEIQ",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
