@@ -35,6 +35,11 @@ const SQLMatchCred = `SELECT
   FROM pagway.usuario
   WHERE email = $1;`;
 
+const SQLGetClient = `SELECT
+    cliente
+  FROM pagway.usuario
+  WHERE id = $1`;
+
 const registerUser: RegisterUser = async (username, email, pass, cliente, autoridade) => {
   const query = await db.query<{ id: number }>({
     name: 'SQLRegisterUser',
@@ -73,8 +78,23 @@ const matchCred = async (email: string): Promise<{ id: number | boolean, pass: s
   return cred;
 }
 
+const getCliente = async (idUsuario: number): Promise<number | null> => {
+  const query = await db.query<{ cliente: number | null }>({
+    name: 'SQLGetClient',
+    text: SQLGetClient,
+    values: [idUsuario]
+  });
+
+  if (query.rowCount === 0) {
+    throw new Error("Usuario nao encontrado");
+  }
+
+  return query.rows[0].cliente;
+}
+
 export default {
   registerUser,
   emailExists,
-  matchCred
+  matchCred,
+  getCliente
 }

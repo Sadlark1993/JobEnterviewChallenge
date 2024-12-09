@@ -1,4 +1,7 @@
+import { error } from 'console';
 import model from '../repository/transacaoRepository';
+import usuarioRepository from '../repository/usuarioRepository';
+
 
 interface CashinProps {
   valor: number;
@@ -7,6 +10,7 @@ interface CashinProps {
   numeroCartao: string;
   validadeCartao: Date;
   codigoSegurancaCartao: string;
+  idUsuario: number
 }
 
 /**
@@ -28,7 +32,11 @@ const mkCashin = ({ persistCashin } = model) => async (props: CashinProps) => {
 
   const ultimos4Cartao = props.numeroCartao.slice(-4);
   const dataCriacaoTransacao = new Date();
-  const cliente = Math.ceil(Math.random() * 5);
+  const cliente = await usuarioRepository.getCliente(props.idUsuario);
+
+  if (!cliente) {
+    throw new Error('É necessário especificar o cliente.');
+  }
 
   const transactionId = await persistCashin(
     props.valor,
@@ -42,23 +50,25 @@ const mkCashin = ({ persistCashin } = model) => async (props: CashinProps) => {
   );
 
   return {
+    result: true,
     dataCriacaoTransacao,
     transactionId,
   };
 };
 
-const recuperarTransacoes = async (pageInt: number, sizeInt: number, orderDesc: boolean) => {
+const recuperarTransacoes = async (pageInt: number, sizeInt: number, orderDesc: boolean, idUsuario: number | null) => {
   const pageValid = !Number.isFinite(pageInt) || Number.isNaN(pageInt) || pageInt < 1 ? 1 : pageInt;
   //
   const sizeValid = Number.isNaN(sizeInt) || sizeInt < 1 ? 1 : sizeInt;
   const sizeCrop = sizeValid > 200 ? 200 : sizeValid;
   //
 
+  const client = idUsuario ? await usuarioRepository.getCliente(idUsuario) : null;
   const transactionList = await model.readPaginatedTransaction({
     limit: sizeCrop,
     offset: sizeCrop * (pageValid - 1),
     order: orderDesc ? 'DESC' : 'ASC',
-    client: Math.ceil(Math.random() * 5)
+    client: client
   });
 
   return transactionList;

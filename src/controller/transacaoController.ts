@@ -10,7 +10,7 @@ const onlyNumber = /^\d+$/;
 // @route POST /api/transacao
 export const inserirTransacao = async (req: express.Request, res: express.Response) => {
   console.log(req.url, new Date());
-  const { valor, descricao, nomePortadorCartao, numeroCartao, validadeCartao, codigoSegurancaCartao } = req.body;
+  const { valor, descricao, nomePortadorCartao, numeroCartao, validadeCartao, codigoSegurancaCartao, idUsuario } = req.body;
 
   // Validate inputs
   const valorOK = typeof valor === 'number' && Number.isFinite(valor) && valor > 0 && valor % 1 === 0;
@@ -40,6 +40,7 @@ export const inserirTransacao = async (req: express.Request, res: express.Respon
     numeroCartao,
     validadeCartao,
     valor,
+    idUsuario
   });
 
   res.status(200).json({
@@ -49,7 +50,7 @@ export const inserirTransacao = async (req: express.Request, res: express.Respon
   await cashout({
     dataCriacaoTransacao,
     transactionId,
-    valorTransacao: valor,
+    valorTransacao: valor
   });
 };
 
@@ -58,10 +59,11 @@ export const inserirTransacao = async (req: express.Request, res: express.Respon
 export const recuperarTransacoes = async (req: express.Request, res: express.Response) => {
   console.log(req.url, new Date());
   const { page = '1', size = '20', order = 'asc' } = req.query;
+  const { idUsuario } = req.body;
   const pageInt = Number.parseInt(String(page));
   const sizeInt = Number.parseInt(String(size));
   const orderDesc = order === 'desc';
-  const transactionList = transacaoService.recuperarTransacoes(pageInt, sizeInt, orderDesc);
+  const transactionList = transacaoService.recuperarTransacoes(pageInt, sizeInt, orderDesc, idUsuario);
 
   res.status(200).json(await transactionList);
 };

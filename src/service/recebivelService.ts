@@ -1,4 +1,5 @@
 import recebivelRepository from "../repository/recebivelRepository";
+import usuarioRepository from "../repository/usuarioRepository";
 
 interface CashoutProps {
   dataCriacaoTransacao: Date;
@@ -17,8 +18,8 @@ const mkCashout = ({ persistCashout } = recebivelRepository) => async (props: Ca
   await persistCashout(props.transactionId, statusRecebivel, dataPagamentoRecebivel, valorLiquidoRecebivel);
 };
 
-const recuperarSaldo = ({ recuperarSaldo } = recebivelRepository) => async () => {
-  let cliente = Math.ceil(Math.random() * 5);
+const recuperarSaldo = ({ recuperarSaldo } = recebivelRepository) => async (idUsuario: number | null) => {
+  let cliente = idUsuario ? await usuarioRepository.getCliente(idUsuario) : null;
   const disponivel = await recuperarSaldo('liquidado', cliente);
   const previsto = await recuperarSaldo('pendente', cliente);
   return { disponivel, previsto, cliente }
