@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import express from "express";
 
-const SECRET_KEY = "SECRET_KEY";
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const verifyToken = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -10,6 +10,11 @@ const verifyToken = (req: express.Request, res: express.Response, next: express.
   }
 
   const token = authHeader.split(" ")[1];
+
+  if (!SECRET_KEY) {
+    throw new Error('Erro interno na geração do token.')
+  }
+
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
       return res.status(403).json({ msg: 'Token inválido ou expirado.' });

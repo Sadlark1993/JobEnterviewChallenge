@@ -1,8 +1,11 @@
 import usuarioRepository from "../repository/usuarioRepository";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import CustomError from "../util/CustomError";
 
 const saltRounds = 10;
+const SECRET_KEY = process.env.SECRET_KEY;
+
 
 interface UserProps {
   username: string,
@@ -49,9 +52,13 @@ const auth = ({ emailExists, matchCred } = usuarioRepository) => async (email: s
     }
   }
 
+  if (!SECRET_KEY) {
+    throw new Error('Erro interno na geração do token.')
+  }
+
   const token = jwt.sign(
     { email: email, id: cred.id, authority: cred.autoridade },
-    "SECRET_KEY",
+    SECRET_KEY,
     { expiresIn: "5h" }
   );
 
