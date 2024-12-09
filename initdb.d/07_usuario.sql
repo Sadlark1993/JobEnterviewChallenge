@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS pagway.usuario
   username varchar(80) NOT NULL,
   email VARCHAR(255) NOT NULL,
   pass VARCHAR(255) NOT NULL,
-  cliente integer NOT NULL,
+  cliente integer,
+  autoridade VARCHAR(80) NOT NULL,
   CONSTRAINT fk_usuario_cliente FOREIGN KEY (cliente)
     REFERENCES pagway.cliente (id) MATCH SIMPLE
     ON UPDATE CASCADE
